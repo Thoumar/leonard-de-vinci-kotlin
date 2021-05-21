@@ -4,11 +4,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.thoumar.entities.Credentials
 import com.thoumar.entities.User
 import com.thoumar.network.API
 import com.thoumar.network.LoginService
@@ -22,21 +20,17 @@ class SignInActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_in)
 
         if(isLoggedIn()) {
-            // Is logged in
-            Toast.makeText(this, "Vous vous êtes déjà connecté", Toast.LENGTH_LONG).show()
             startActivity(Intent(this@SignInActivity, MainActivity::class.java))
             finish()
-        } else {
-            // Never logged in
-            Toast.makeText(this, "Vous n'êtes pas connecté", Toast.LENGTH_LONG).show()
         }
 
-        Log.d("[SIGN_IN_ACTIVITY]",
-            getPreferences(MODE_PRIVATE).getBoolean("IS_LOGGED_IN", false).toString()
-        )
-
-        findViewById<Button>(R.id.loginBtn).setOnClickListener {
+        findViewById<Button>(R.id.signInActivity).setOnClickListener {
             logIn()
+        }
+
+        findViewById<Button>(R.id.signUpBtn).setOnClickListener {
+            startActivity(Intent(this, SignUpActivity::class.java))
+            finish()
         }
     }
 
@@ -47,14 +41,13 @@ class SignInActivity : AppCompatActivity() {
         if(isEmailValid(email) && isPasswordValid(password)) {
             Toast.makeText(this, "Trying to log you in", Toast.LENGTH_LONG).show()
 
-            // Call api
             val service = LoginService.buildService(API::class.java)
             val call = service.login()
             call.enqueue(object: Callback<User> {
                 override fun onResponse(call: Call<User>, response: Response<User>) {
-                    Toast.makeText(this@SignInActivity, "Request succesful", Toast.LENGTH_LONG).show()
                     if(response.isSuccessful) {
-                        setSuccesfullyLoggedIn()
+                        val user  = response.body()
+                        setSuccesfullyLoggedIn(user!!.prenom, user.nom)
                         startActivity(Intent(this@SignInActivity, MainActivity::class.java))
                         finish()
                     }
@@ -76,13 +69,14 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun isLoggedIn(): Boolean {
-        return getPreferences(MODE_PRIVATE).getBoolean("IS_LOGGED_IN", false)
+        return !getPreferences(MODE_PRIVATE).getString("USER_FIRST_NAME", "").isNullOrEmpty() && !getPreferences(MODE_PRIVATE).getString("USER_LAST_NAME", "").isNullOrEmpty()
     }
 
-    fun setSuccesfullyLoggedIn() {
+    fun setSuccesfullyLoggedIn(prenom: String, nom: String) {
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
         with (sharedPref.edit()) {
-            putBoolean("IS_LOGGED_IN", true)
+            putString("USER_FIRST_NAME", prenom)
+            putString("USER_LAST_NAME", nom)
             apply()
         }
     }
