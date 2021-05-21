@@ -2,17 +2,19 @@ package com.thoumar.leonarddevincikotlin
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.thoumar.entities.User
 import com.thoumar.network.API
 import com.thoumar.network.LoginService
-import retrofit2.Callback
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
+
 
 class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,10 +45,10 @@ class SignInActivity : AppCompatActivity() {
 
             val service = LoginService.buildService(API::class.java)
             val call = service.login()
-            call.enqueue(object: Callback<User> {
+            call.enqueue(object : Callback<User> {
                 override fun onResponse(call: Call<User>, response: Response<User>) {
-                    if(response.isSuccessful) {
-                        val user  = response.body()
+                    if (response.isSuccessful) {
+                        val user = response.body()
                         setSuccesfullyLoggedIn(user!!.prenom, user.nom)
                         startActivity(Intent(this@SignInActivity, MainActivity::class.java))
                         finish()
@@ -69,15 +71,13 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun isLoggedIn(): Boolean {
-        return !getPreferences(MODE_PRIVATE).getString("USER_FIRST_NAME", "").isNullOrEmpty() && !getPreferences(MODE_PRIVATE).getString("USER_LAST_NAME", "").isNullOrEmpty()
+        return !getSharedPreferences("PREFERENCES", MODE_PRIVATE).getString("USER_FIRST_NAME", "").isNullOrEmpty()
+                && !getSharedPreferences("PREFERENCES", MODE_PRIVATE).getString("USER_LAST_NAME", "").isNullOrEmpty()
     }
 
     fun setSuccesfullyLoggedIn(prenom: String, nom: String) {
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
-        with (sharedPref.edit()) {
-            putString("USER_FIRST_NAME", prenom)
-            putString("USER_LAST_NAME", nom)
-            apply()
-        }
+        val spe: SharedPreferences = getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE)
+        spe.edit().putString("USER_FIRST_NAME", prenom).apply()
+        spe.edit().putString("USER_LAST_NAME", nom).apply()
     }
 }

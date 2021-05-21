@@ -2,6 +2,7 @@ package com.thoumar.leonarddevincikotlin
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -73,11 +74,8 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     fun setSuccesfullySignedIn(prenom: String, nom: String) {
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
-        with (sharedPref.edit()) {
-            putString("USER_FIRST_NAME", prenom)
-            putString("USER_LAST_NAME", nom)
-            apply()
-        }
+        val spe: SharedPreferences = getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE)
+        spe.edit().putString("USER_FIRST_NAME", prenom).apply()
+        spe.edit().putString("USER_LAST_NAME", nom).apply()
     }
 }
