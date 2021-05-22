@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun refreshRcView() {
+    private fun refreshRcView() {
         todoAdapter?.todoList = appDatabase?.todoDao()?.getAll()
         findViewById<RecyclerView>(R.id.todo_rv).adapter = todoAdapter
         todoAdapter?.notifyDataSetChanged()
