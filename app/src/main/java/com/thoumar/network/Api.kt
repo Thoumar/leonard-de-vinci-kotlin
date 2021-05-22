@@ -1,5 +1,5 @@
 package com.thoumar.network
-import com.thoumar.entities.User
+import com.thoumar.database.models.User
 import retrofit2.Call
 import retrofit2.http.GET
 

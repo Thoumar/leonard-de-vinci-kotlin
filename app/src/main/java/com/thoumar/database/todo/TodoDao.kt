@@ -1,6 +1,8 @@
 package com.thoumar.database.todo
 
 import androidx.room.*
+import com.thoumar.database.models.Todo
+
 @Dao
 interface TodoDao {
     @Query("SELECT * FROM todo")

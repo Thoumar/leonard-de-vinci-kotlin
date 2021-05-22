@@ -1,4 +1,4 @@
-package com.thoumar.database.todo
+package com.thoumar.database.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

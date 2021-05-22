@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.thoumar.entities.User
+import com.thoumar.database.models.User
 import com.thoumar.network.API
 import com.thoumar.network.LoginService
 import retrofit2.Call
@@ -36,8 +36,6 @@ class SignUpActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.editTextPassword).text.toString()
 
         if(isNomValid(nom) && isPrenomValid(prenom) && isEmailValid(email) && isPasswordValid(password)) {
-            Toast.makeText(this, "Trying to sign you in", Toast.LENGTH_LONG).show()
-
             val service = LoginService.buildService(API::class.java)
             val call = service.login()
             call.enqueue(object: Callback<User> {
@@ -50,9 +48,7 @@ class SignUpActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<User>, t: Throwable) {
-                    Toast.makeText(this@SignUpActivity, "Failed request", Toast.LENGTH_LONG).show()
-                }
+                override fun onFailure(call: Call<User>, t: Throwable) {}
             })
         }
     }
