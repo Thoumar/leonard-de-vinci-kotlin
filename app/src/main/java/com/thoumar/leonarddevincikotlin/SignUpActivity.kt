@@ -76,11 +76,11 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun isNomValid(nom: String?): Boolean {
-        return nom.isNullOrEmpty()
+        return !nom.isNullOrEmpty()
     }
 
     private fun isPrenomValid(prenom: String?): Boolean {
-        return prenom.isNullOrEmpty()
+        return !prenom.isNullOrEmpty()
     }
 
     private fun isPasswordValid(password: String?): Boolean {

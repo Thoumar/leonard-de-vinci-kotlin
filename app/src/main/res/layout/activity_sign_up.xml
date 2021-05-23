@@ -17,9 +17,8 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:ems="10"
-
         android:hint="Nom"
-        android:inputType="textEmailAddress"
+        android:inputType="text"
         android:textAlignment="textStart"
         app:layout_constraintBottom_toTopOf="@+id/editTextFirstName"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +35,7 @@
         android:layout_marginBottom="32dp"
         android:ems="10"
         android:hint="Prenom"
-        android:inputType="textPassword"
+        android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/editTextEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
