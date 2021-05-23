@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.thoumar.database.models.Todo
@@ -21,7 +22,7 @@ class TodoAdapter(var todoList: List<Todo>? = ArrayList<Todo>(), var removeClick
     override fun getItemCount(): Int = if(todoList!!.isEmpty()) 0 else todoList!!.size
 
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int){
-        holder.view.findViewById<Button>(R.id.deleteBtn).setOnClickListener {
+        holder.view.findViewById<ImageButton>(R.id.deleteBtn).setOnClickListener {
             removeClicked(todoList!![position])
         }
         holder.onBindViews(position)

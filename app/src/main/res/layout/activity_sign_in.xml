@@ -34,12 +34,12 @@
         android:ems="10"
         android:hint="Mot de passe"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/signInActivity"
+        app:layout_constraintBottom_toTopOf="@+id/signInBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/signInActivity"
+        android:id="@+id/signInBtn"
         android:layout_width="0dp"
         android:layout_height="70dp"
         android:layout_marginStart="32dp"

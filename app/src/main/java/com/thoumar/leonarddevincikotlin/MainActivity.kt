@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,56 +16,86 @@ import com.thoumar.database.models.Todo
 
 class MainActivity : AppCompatActivity() {
 
+    private var addTodoBtn: ImageButton? = null
+    private var firstNameKey = "USER_FIRST_NAME"
+    private var lastNameKey = "USER_LAST_NAME"
     private var appDatabase: AppDatabase? = null
     private var todoAdapter: TodoAdapter? = null
+    private var todoRecyclerView: RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val prenom = getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE).getString(
-            "USER_FIRST_NAME",
-            null
-        )
+        // Get views
+        val textViewWelcome = findViewById<TextView>(R.id.welcomeText)
+        addTodoBtn = findViewById(R.id.add_todo)
+        todoRecyclerView = findViewById(R.id.todo_rv)
 
-        val nom = getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE).getString(
-            "USER_LAST_NAME",
-            null
-        )
+        // Get first name and last name from shared preferences
+        val firstName = getFirstName()
+        val lastName = getLastName()
 
-        findViewById<TextView>(R.id.welcomeText).text = "Bonjour ${nom} ${prenom}"
+        // Set welcome sentence
+        val welcomeSentence = "Bonjour $firstName $lastName"
+        textViewWelcome.text = welcomeSentence
 
-         appDatabase = Room.databaseBuilder(
+        // Functions
+        loadDatabase()
+        setTodoAdapter()
+        setOnAddTodoClickListener()
+    }
+
+    private fun loadDatabase() {
+        appDatabase = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "database-name"
         ).allowMainThreadQueries().build()
+    }
 
+    private fun setTodoAdapter() {
         todoAdapter = TodoAdapter {
             appDatabase?.todoDao()?.delete(it)
             refreshRcView()
         }
+    }
 
-        findViewById<Button>(R.id.add_todo).setOnClickListener {
+    private fun setOnAddTodoClickListener () {
+        addTodoBtn?.setOnClickListener {
             val title = findViewById<EditText>(R.id.editTextTodo).text.toString()
-
-            if(!title.isNullOrEmpty()) {
+            if(title.isNotEmpty()) {
                 val todo = Todo(0, title, false)
                 appDatabase?.todoDao()?.insert(todo)
                 refreshRcView()
+                findViewById<EditText>(R.id.editTextTodo).setText("")
             }
         }
     }
 
+    private fun getFirstName(): String? {
+        return getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE).getString(
+            firstNameKey,
+            null
+        )
+    }
+
+    private fun getLastName(): String? {
+        return getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE).getString(
+            lastNameKey,
+            null
+        )
+    }
+
     private fun refreshRcView() {
         todoAdapter?.todoList = appDatabase?.todoDao()?.getAll()
-        findViewById<RecyclerView>(R.id.todo_rv).adapter = todoAdapter
+        todoRecyclerView?.adapter = todoAdapter
         todoAdapter?.notifyDataSetChanged()
     }
 
     override fun onResume() {
         super.onResume()
         refreshRcView()
-        findViewById<RecyclerView>(R.id.todo_rv).layoutManager = LinearLayoutManager(this)
-        findViewById<RecyclerView>(R.id.todo_rv).hasFixedSize()
+        todoRecyclerView?.layoutManager = LinearLayoutManager(this)
+        todoRecyclerView?.hasFixedSize()
     }
 }
